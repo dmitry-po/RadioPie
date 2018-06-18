@@ -1,0 +1,96 @@
+<doctype html>
+<head>
+<title>RadioPie</title>
+<style>
+{{styles}}
+
+@width: 240px;
+@gap: 16px;
+@padding: 32px; // extra padding from body
+* { box-sizing: border-box; }
+
+body {
+  background-color: #e8e8e8;
+  padding: 16px;
+}
+.grid {
+  width:97%;
+  max-width: 1000px;
+}
+
+.container {
+  width: 95%;
+  margin: 8px;
+  padding: 8px;
+
+  background-color: #fff;
+  min-height: 4em;
+  border-radius: 2px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.2),0 1px 5px 0 rgba(0,0,0,0.12);
+  transition: box-shadow 0.2s;
+}
+.container:hover {
+  box-shadow: 0 2px 15px rgba(0,0,0,0.30);
+}
+
+.news { 
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) minmax(200px, 1fr);
+}
+.news-item {
+  margin: 5px;
+  padding: 5px;
+}
+.news-item:hover {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.30);
+}
+
+</style>
+<body id="body">
+<div align="center">
+<div class="grid">
+<div class="container">
+<h1>{{name}}</h1>
+</div>
+<div class="container">
+<form type='form' method='POST' action='/'>
+<input type='submit' name='submit' value='on'/>
+<input type='submit' name='submit' value='test'/>
+<input type='submit' name='submit' value='off'/>
+<select name='station'>
+{% for station in playlist %}
+{% if station[0] == selected_station %}
+<option value={{station[0]}} selected=True>{{station[1]}}
+{% else %}
+<option value={{station[0]}}>{{station[1]}}
+{% endif %}
+{% endfor %}
+</select>
+<input type='range' name='volume_bar' min=0 max=100 value="{{volume}}"/>
+<input type='time' name='start_time' value='07:30'/>
+<input type='submit' name='submit' value='alarm'/>
+</div>
+<div class="container">
+<div style="display:inline-block">
+<img src={{weather['icon']}}>
+<p>{{weather['temp_min']}}-{{weather['temp_max']}}*C, {{weather['humidity']}}%, 
+{{weather['pressure']}}pa</p>
+</div>
+{% for item in forecast %}
+<div style="display:inline-block">
+<img src={{item['icon']}}>
+<p>{{item['date'][10:16]}}
+{{item['temp']}}*C, {{item['pressure']}}pa
+</p>
+</div>
+{% endfor %}
+</div>
+<div class="container">
+<div class="news">
+{% for item in news %}
+<div class="news-item">{{item}}</div>
+{% endfor %}
+</div>
+</div>
+</div>
+</body>
