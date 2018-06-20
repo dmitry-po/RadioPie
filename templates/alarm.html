@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alarm</title>
+    <style>{{style}}</style>
+</head>
+<body>
+    <div class="container">
+        <p>{{current_alarm}}</p>
+        <form type="form" method="POST" action="alarm">
+            <input type="submit" name="submit" value="set_alarm">
+            <input type="submit" name="submit" value="stop_alarm">
+            <select name='station'>
+                {% for station in playlist %}
+                {% if station[0] == selected_station %}
+                <option value={{station[0]}} selected=True>{{station[1]}}
+                    {% else %}
+                <option value={{station[0]}}>{{station[1]}}
+                {% endif %}
+                {% endfor %}
+            </select>
+            <input type='time' name='start_time' value='07:30'/>
+        </form>
+    </div>
+</body>
+</html>

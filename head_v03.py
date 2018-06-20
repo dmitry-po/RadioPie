@@ -1,29 +1,46 @@
 # Python 2.7.13
 # -*- coding: utf-8 -*-
 
-import vlc
+# 20.06.2018 replace -->
+debug = True
+if not debug:
+    import vlc
+# import vlc
+# 20.06.2018 replace <--
 import time
 from time import sleep
 from flask import Flask
 from flask import render_template
 from flask import request
 import threading
-import thread
+# 20.06.2018 comment -->
+# import thread
+# 20.06.2018 comment <--
 # -->
 import requests
+# 20.06.2018 add -->
+import alarm
+# 20.06.2018 add <--
 # <--
 
 playlist = [['http://ic7.101.ru:8000/a200', 'Relax'],
             ['http://ic7.101.ru:8000/a202', 'Comedy'],
             ['http://ic7.101.ru:8000/a101', 'Romantic'],
             ['http://185.39.195.90:8000/montecarlo_128', 'Royal']]
-instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
-player = instance.media_player_new()
+if not debug:
+    instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
+    player = instance.media_player_new()
 # -->
 OWM_appid = '58aaaed4b1fe9293916758ce54a05b94'
 OWM_api = 'http://api.openweathermap.org/data/2.5/'
 # <--
 
+# 20.06.2018 add -->
+new_alarm = alarm.Alarm('alarm')
+# 20.06.2018 add <--
+
+# 20.06.2018 comment -->
+'''
 def fire_alarm(media, hour, minute):
     volume = 0
     player.audio_set_volume(volume)  
@@ -47,29 +64,32 @@ def fire_alarm(media, hour, minute):
         print(volume)
         sleep(1)
         volume += 1
+'''
+# 20.06.2018 comment <--
         
 
 def test_play(media, volume):
     # player.stop()   
-    player.set_media(media)
-    #print(player.is_playing())
-    if player.is_playing != 1:
-        player.play()
-        print('started')
-    player.audio_set_volume(volume)
+    # player.set_media(media)
+    # print(player.is_playing())
+    # if player.is_playing != 1:
+    #     player.play()
+    #     print('started')
+    # player.audio_set_volume(volume)
     
     print('Let the music play')
 
 def stop_music():
-    player.stop()
+    # player.stop()
     print('oh no!')
 
 def test():
     print(request.form['start_time'])
 
 def get_media(station):
-    media = instance.media_new(station)
-    return media
+    # media = instance.media_new(station)
+    # return media
+    ''
 
 def init_params():
     try:
@@ -156,7 +176,7 @@ def get_news():
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
-def smth():
+def get_index_page():
     print('voila!') 
     selected_station, volume = init_params()
     # change styles -->
@@ -172,13 +192,13 @@ def smth():
     if request.method=='POST':
 
         selected_station = request.form['station']
-        media = instance.media_new(selected_station)
+        # media = instance.media_new(selected_station)
         volume = int(request.form['volume_bar'])
         
         if request.form['submit'] == 'on':
             print(selected_station, volume)
-            test_play(media, volume)
-            player.audio_set_volume(volume)
+            # test_play(media, volume)
+            # player.audio_set_volume(volume)
             
         elif request.form['submit'] == 'off':
             stop_music()
@@ -187,12 +207,12 @@ def smth():
             alarm_time = request.form['start_time']
             alarm_h = int(alarm_time[:2])
             alarm_m = int(alarm_time[3:])
-            a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
+            # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
 
             
         elif request.form['submit'] == 'test':
             # print(request.form['volume_bar'])
-            player.audio_set_volume(volume)
+            # player.audio_set_volume(volume)
             print('hey!')
             print(player.is_playing())
             # player.will_play()
@@ -208,5 +228,40 @@ def smth():
                            news = get_news())
 
 
+# 20.06.2018 add -->
+@app.route('/alarm', methods=['GET', 'POST'])
+def get_alarm_page():
+    print('voila2!')
+    selected_station, volume = init_params()
+    styles = render_template('styles.css')
+    # <--
+
+    if request.method == 'POST':
+
+        selected_station = request.form['station']
+        # media = instance.media_new(selected_station)
+
+        if request.form['submit'] == 'stop_alarm':
+            new_alarm.stop_alarm()
+
+        elif request.form['submit'] == 'set_alarm':
+            print('r u here?')
+            alarm_time = request.form['start_time']
+            alarm_h = int(alarm_time[:2])
+            alarm_m = int(alarm_time[3:])
+            new_alarm.set_alarm(alarm_h,alarm_m,'empty')
+            if not new_alarm.is_alive():
+                new_alarm.start()
+            # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
+
+    return render_template('alarm.html',
+                           styles=styles,
+                           playlist=playlist,
+                           selected_station=selected_station,
+                           current_alarm=new_alarm.get_next_alarm_time())
+# 20.06.2018 add <--
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run()
+    #app.run(host='0.0.0.0')
