@@ -8,6 +8,7 @@ body {
   padding: 16px;
 }
 .grid {
+  width:97%;
   max-width: 1000px;
 }
 
@@ -26,13 +27,13 @@ body {
   box-shadow: 0 2px 15px rgba(0,0,0,0.30);
 }
 
-.news { 
+.news {
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: minmax(200px, 1fr) minmax(200px, 1fr) minmax(200px, 1fr);
 }
 .news-item {
-  margin: 2px;
-  padding: 1px;
+  margin: 5px;
+  padding: 5px;
 }
 .news-item:hover {
   box-shadow: 0 2px 5px rgba(0,0,0,0.30);

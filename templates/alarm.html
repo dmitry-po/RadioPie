@@ -3,25 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Alarm</title>
-    <style>{{style}}</style>
+    <style>{{styles}}</style>
 </head>
-<body>
-    <div class="container">
-        <p>{{current_alarm}}</p>
-        <form type="form" method="POST" action="alarm">
-            <input type="submit" name="submit" value="set_alarm">
-            <input type="submit" name="submit" value="stop_alarm">
-            <select name='station'>
-                {% for station in playlist %}
-                {% if station[0] == selected_station %}
-                <option value={{station[0]}} selected=True>{{station[1]}}
-                    {% else %}
-                <option value={{station[0]}}>{{station[1]}}
-                {% endif %}
-                {% endfor %}
-            </select>
-            <input type='time' name='start_time' value='07:30'/>
-        </form>
+<body id="body">
+    <div align="center">
+        <div class="grid">
+            <div class="container">
+                <h1>Alarm setup</h1>
+            </div>
+            <div class="container">
+                <a href="/">Main</a>
+            </div>
+            <div class="container">
+                <p>{{current_alarm}}</p>
+                <form type="form" method="POST" action="alarm">
+                    <input type="submit" name="submit" value="set_alarm">
+                    <input type="submit" name="submit" value="stop_alarm">
+                    <select name='station'>
+                        {% for station in playlist %}
+                        {% if station[0] == selected_station %}
+                        <option value={{station[0]}} selected=True>{{station[1]}}
+                            {% else %}
+                        <option value={{station[0]}}>{{station[1]}}
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <input type='time' name='start_time' value='07:30'/>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 </html>

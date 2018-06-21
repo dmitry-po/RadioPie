@@ -102,31 +102,69 @@ def init_params():
         volume = 77
     return selected_station, volume
 
+
 # -->
 def get_weather(type='weather', city='Moscow', country='ru'):
-    # type = ['weather','forecast]
-    request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
-    request_res = requests.get(request_link).json()
-    print(request_res)
-    weather = {'id':request_res['weather'][0]['id'],
-               'humidity': request_res['main']['humidity'],
-               'pressure': request_res['main']['pressure'],
-               'temp': request_res['main']['temp'] - 273,
-               'temp_max': request_res['main']['temp_max'] - 273,
-               'temp_min': request_res['main']['temp_min'] - 273,
-               'icon': get_weather_icon(request_res['weather'][0]['id'])}
-    print(weather)
+    try:
+        # type = ['weather','forecast]
+        request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
+        request_res = requests.get(request_link).json()
+        print(request_res)
+        weather = {'id':request_res['weather'][0]['id'],
+                   'humidity': request_res['main']['humidity'],
+                   'pressure': request_res['main']['pressure'],
+                   'temp': round(request_res['main']['temp'] - 273, 1),
+                   'temp_max': round(request_res['main']['temp_max'] - 273, 1),
+                   'temp_min': round(request_res['main']['temp_min'] - 273, 1),
+                   'icon': get_weather_icon(request_res['weather'][0]['id'])}
+        #print(weather)
+    # 21.06.2018 add -->
+    except ConnectionError:
+        weather = {'id':'',
+                   'humidity': '',
+                   'pressure': '',
+                   'temp': '',
+                   'temp_max': '',
+                   'temp_min': '',
+                   'icon': ''}
+    # 21.06.2018 add <--
     return weather
 
+
 def get_weather_forecast(type='forecast', city='Moscow', country='ru'):
+    # 21.06.2018 replace -->
+    try:
+        request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
+        request_res = requests.get(request_link).json()
+        request_res = request_res['list']
+        weather = []
+        for forecast in request_res:
+            weather.append(
+                {'id':forecast['weather'][0]['id'],
+                 'humidity': forecast['main']['humidity'],
+                 'pressure': forecast['main']['pressure'],
+                 'temp': round(forecast['main']['temp'] - 273, 1),
+                 'temp_max': round(forecast['main']['temp_max'] - 273, 1),
+                 'temp_min': round(forecast['main']['temp_min'] - 273, 1),
+                 'icon': get_weather_icon(forecast['weather'][0]['id']),
+                 'date': forecast['dt_txt']}
+                )
+        #print(weather)
+    except ConnectionError:
+        weather = [{'id': '',
+                   'humidity': '',
+                   'pressure': '',
+                   'temp': '',
+                   'temp_max': '',
+                   'temp_min': '',
+                   'icon': ''}]
+    return weather
+    '''
     request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
     request_res = requests.get(request_link).json()
     request_res = request_res['list']
     weather = []
     for forecast in request_res:
-        #print('---')
-        #print(forecast)
-        #print('+++')
         weather.append(
             {'id':forecast['weather'][0]['id'],
              'humidity': forecast['main']['humidity'],
@@ -139,6 +177,8 @@ def get_weather_forecast(type='forecast', city='Moscow', country='ru'):
             )
     print(weather)
     return weather
+    '''
+# 21.06.2018 replace <--
 
 
 def get_weather_icon(id):
@@ -179,10 +219,7 @@ app = Flask(__name__)
 def get_index_page():
     print('voila!') 
     selected_station, volume = init_params()
-    # change styles -->
     styles = render_template('styles.css')
-    styles = ''
-    # <--
 
     # -->
     weather_today = get_weather()
@@ -203,13 +240,6 @@ def get_index_page():
         elif request.form['submit'] == 'off':
             stop_music()
             
-        elif request.form['submit'] == 'alarm':
-            alarm_time = request.form['start_time']
-            alarm_h = int(alarm_time[:2])
-            alarm_m = int(alarm_time[3:])
-            # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
-
-            
         elif request.form['submit'] == 'test':
             # print(request.form['volume_bar'])
             # player.audio_set_volume(volume)
@@ -217,6 +247,15 @@ def get_index_page():
             print(player.is_playing())
             # player.will_play()
 
+        # 21.06.2018 delete -->
+        '''
+        elif request.form['submit'] == 'alarm':
+                    alarm_time = request.form['start_time']
+                    alarm_h = int(alarm_time[:2])
+                    alarm_m = int(alarm_time[3:])
+                    # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
+        '''
+        # 21.06.2018 delete <--
             
     return render_template('index.html', name="Shine bright!",
                            styles=styles,
