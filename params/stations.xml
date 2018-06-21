@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<stations>
+    <station>
+        <url>http://ic7.101.ru:8000/a200</url>
+        <name>Relax</name>
+    </station>
+    <station>
+        <url>http://ic7.101.ru:8000/a202</url>
+        <name>Comedy</name>
+    </station>
+    <station>
+        <url>http://ic7.101.ru:8000/a101</url>
+        <name>Romantic</name>
+    </station>
+    <station>
+        <url>http://185.39.195.90:8000/montecarlo_128</url>
+        <name>Royal</name>
+    </station>
+</stations>

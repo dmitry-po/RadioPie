@@ -20,13 +20,18 @@ import threading
 import requests
 # 20.06.2018 add -->
 import alarm
+import xml.etree.ElementTree as xmltree
 # 20.06.2018 add <--
 # <--
 
+# 21.06.2018 comment -->
+'''
 playlist = [['http://ic7.101.ru:8000/a200', 'Relax'],
             ['http://ic7.101.ru:8000/a202', 'Comedy'],
             ['http://ic7.101.ru:8000/a101', 'Romantic'],
             ['http://185.39.195.90:8000/montecarlo_128', 'Royal']]
+'''
+# 21.06.2018 comment <--
 if not debug:
     instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
     player = instance.media_player_new()
@@ -39,34 +44,6 @@ OWM_api = 'http://api.openweathermap.org/data/2.5/'
 new_alarm = alarm.Alarm('alarm')
 # 20.06.2018 add <--
 
-# 20.06.2018 comment -->
-'''
-def fire_alarm(media, hour, minute):
-    volume = 0
-    player.audio_set_volume(volume)  
-    player.stop()
-    player.set_media(media)
-    print('start at {0}:{1}'.format(hour, minute))
-    # remake trigger -->
-    current_time = time.localtime()
-    sleep_duration_m = 24*60 + (hour*60 + minute -
-                                (current_time.tm_hour*60 + current_time.tm_min))
-    start_in_h = (sleep_duration_m // 60) % 24
-    start_in_m = sleep_duration_m % 60
-    print('start in {0}:{1}'.format(start_in_h, start_in_m))
-    sleep_duration = start_in_h*3600 + start_in_m*60
-    print(sleep_duration)
-    sleep(sleep_duration)
-    # remake trigger <--
-    player.play()
-    while volume < 90:
-        player.audio_set_volume(volume)
-        print(volume)
-        sleep(1)
-        volume += 1
-'''
-# 20.06.2018 comment <--
-        
 
 def test_play(media, volume):
     # player.stop()   
@@ -210,10 +187,21 @@ def get_news():
     # print(news_titles)
     return news_titles
 # <--
-    
+
+
+# 21.06.2018 add -->
+def get_stations():
+    station_tree = xmltree.parse('params/stations.xml')
+    stations = station_tree.getroot()
+    playlist = []
+    for station in stations:
+        playlist.append([station[0].text, station[1].text])
+    return playlist
+# 21.06.2018 add <--
 
 
 app = Flask(__name__)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def get_index_page():
@@ -259,7 +247,7 @@ def get_index_page():
             
     return render_template('index.html', name="Shine bright!",
                            styles=styles,
-                           playlist = playlist,
+                           playlist=get_stations(),
                            selected_station = selected_station,
                            volume = volume,
                            weather = weather_today,
@@ -295,7 +283,7 @@ def get_alarm_page():
 
     return render_template('alarm.html',
                            styles=styles,
-                           playlist=playlist,
+                           playlist=get_stations(),
                            selected_station=selected_station,
                            current_alarm=new_alarm.get_next_alarm_time())
 # 20.06.2018 add <--
