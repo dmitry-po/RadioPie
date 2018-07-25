@@ -1,8 +1,12 @@
 # 20.06.2018 make alarm class -->
 from threading import Thread
 import time
+# 25072018 add -->
+import mediaPlayer as mp
+# 25072018 add <--
 
 
+'''
 class Alarm_timer(Thread):
     def __init__(self, name):
         Thread.__init__(self)
@@ -10,7 +14,7 @@ class Alarm_timer(Thread):
 
     def run(self):
         ''
-
+'''
 
 class Alarm(Thread):
     def __init__(self, name):

@@ -13,6 +13,14 @@
         <name>Romantic</name>
     </station>
     <station>
+        <url>http://91.207.59.26/a105</url>
+        <name>Something1</name>
+    </station>
+    <station>
+        <url>http://91.207.59.26/a109</url>
+        <name>Something2</name>
+    </station>
+    <station>
         <url>http://185.39.195.90:8000/montecarlo_128</url>
         <name>Royal</name>
     </station>

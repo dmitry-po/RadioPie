@@ -22,16 +22,11 @@ import requests
 import alarm
 import xml.etree.ElementTree as xmltree
 # 20.06.2018 add <--
+# 25072018 add -->
+import mediaPlayer as mp
+# 25072018 add <--
 # <--
 
-# 21.06.2018 comment -->
-'''
-playlist = [['http://ic7.101.ru:8000/a200', 'Relax'],
-            ['http://ic7.101.ru:8000/a202', 'Comedy'],
-            ['http://ic7.101.ru:8000/a101', 'Romantic'],
-            ['http://185.39.195.90:8000/montecarlo_128', 'Royal']]
-'''
-# 21.06.2018 comment <--
 if not debug:
     instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
     player = instance.media_player_new()
