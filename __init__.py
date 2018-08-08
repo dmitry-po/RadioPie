@@ -25,6 +25,10 @@ import xml.etree.ElementTree as xmltree
 # 25072018 add -->
 import mediaPlayer as mp
 # 25072018 add <--
+# 07082018 -->
+import subprocess
+import os
+# 07082018 <--
 # <--
 
 if not debug:
@@ -37,6 +41,7 @@ OWM_api = 'http://api.openweathermap.org/data/2.5/'
 
 # 20.06.2018 add -->
 new_alarm = alarm.Alarm('alarm')
+player = mp.MediaPlayer()
 # 20.06.2018 add <--
 
 
@@ -220,14 +225,21 @@ def get_index_page():
             # test_play(media, volume)
             # player.audio_set_volume(volume)
             
+            
         elif request.form['submit'] == 'off':
-            stop_music()
+            # stop_music()
+            player.stop()
             
         elif request.form['submit'] == 'test':
             # print(request.form['volume_bar'])
             # player.audio_set_volume(volume)
             print('hey!')
-            print(player.is_playing())
+            # print(player.is_playing())
+            # 07082018 -->
+            # subprocess.call(['omxplayer', '-o', 'both', selected_station])
+            player.start()
+            # os.system('omxplayer -o both http://ic7.101.ru:8000/a101')
+            # 07082018 <--
             # player.will_play()
 
         # 21.06.2018 delete -->
@@ -285,5 +297,5 @@ def get_alarm_page():
 
 
 if __name__ == "__main__":
-    app.run()
-    #app.run(host='0.0.0.0')
+    #app.run()
+    app.run(host='0.0.0.0')

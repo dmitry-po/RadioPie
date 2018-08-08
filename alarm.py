@@ -15,6 +15,7 @@ class Alarm_timer(Thread):
     def run(self):
         ''
 '''
+player = mp.MediaPlayer()
 
 class Alarm(Thread):
     def __init__(self, name):
@@ -63,11 +64,14 @@ class Alarm(Thread):
     def play_alarm(self):
         volume = 0
         # player.play()
+        player.start()
+        '''
         while volume < 90:
             # player.audio_set_volume(volume)
             print(volume)
             time.sleep(1)
             volume += 1
+        '''
 
     def fire_alarm(self):
         # 20.06.2018 comment -->
