@@ -64,6 +64,7 @@ class Alarm(Thread):
     def play_alarm(self):
         volume = 0
         # player.play()
+        player.set_params(fade_in=True)
         player.start()
         '''
         while volume < 90:

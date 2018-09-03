@@ -222,25 +222,18 @@ def get_index_page():
         
         if request.form['submit'] == 'on':
             print(selected_station, volume)
-            # test_play(media, volume)
-            # player.audio_set_volume(volume)
+            player.set_params(volume=volume)
+            if not player.is_alive():
+                player.start()
             
             
         elif request.form['submit'] == 'off':
             # stop_music()
-            player.stop()
+            player.pause()
             
         elif request.form['submit'] == 'test':
-            # print(request.form['volume_bar'])
-            # player.audio_set_volume(volume)
-            print('hey!')
-            # print(player.is_playing())
-            # 07082018 -->
-            # subprocess.call(['omxplayer', '-o', 'both', selected_station])
-            player.start()
-            # os.system('omxplayer -o both http://ic7.101.ru:8000/a101')
-            # 07082018 <--
-            # player.will_play()
+            print('set volume to {}'.format(volume))
+            player.set_volume(volume)
 
         # 21.06.2018 delete -->
         '''
@@ -298,4 +291,4 @@ def get_alarm_page():
 
 if __name__ == "__main__":
     #app.run()
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port='3000')
