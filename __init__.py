@@ -40,28 +40,11 @@ OWM_api = 'http://api.openweathermap.org/data/2.5/'
 # <--
 
 # 20.06.2018 add -->
-new_alarm = alarm.Alarm('alarm')
 player = mp.MediaPlayer()
+new_alarm = alarm.Alarm('alarm', player)
+player.start()
 # 20.06.2018 add <--
 
-
-def test_play(media, volume):
-    # player.stop()   
-    # player.set_media(media)
-    # print(player.is_playing())
-    # if player.is_playing != 1:
-    #     player.play()
-    #     print('started')
-    # player.audio_set_volume(volume)
-    
-    print('Let the music play')
-
-def stop_music():
-    # player.stop()
-    print('oh no!')
-
-def test():
-    print(request.form['start_time'])
 
 def get_media(station):
     # media = instance.media_new(station)
@@ -224,27 +207,18 @@ def get_index_page():
             print(selected_station, volume)
             player.set_params(volume=volume)
             if not player.is_alive():
-                player.start()
+                # player.start()
+                player.play()
             
             
         elif request.form['submit'] == 'off':
             # stop_music()
-            player.pause()
+            player.kill_player()
             
         elif request.form['submit'] == 'test':
             print('set volume to {}'.format(volume))
-            player.set_volume(volume)
+            player.change_volume(volume)
 
-        # 21.06.2018 delete -->
-        '''
-        elif request.form['submit'] == 'alarm':
-                    alarm_time = request.form['start_time']
-                    alarm_h = int(alarm_time[:2])
-                    alarm_m = int(alarm_time[3:])
-                    # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
-        '''
-        # 21.06.2018 delete <--
-            
     return render_template('index.html', name="Shine bright!",
                            styles=styles,
                            playlist=get_stations(),
