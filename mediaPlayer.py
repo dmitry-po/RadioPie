@@ -3,6 +3,13 @@ from subprocess import Popen, PIPE
 import os
 import time
 
+playerAvailable = False
+try:
+    import vlc
+    playerAvailable = True
+except:
+    print('Cant load vlc')
+
 class MediaPlayer(Thread):
     def __init__(self):
         Thread.__init__(self)
@@ -10,6 +17,9 @@ class MediaPlayer(Thread):
         self.volume = 0
         self.fade_in = False
         self.station = 'http://ic7.101.ru:8000/a101'
+        if playerAvailable:
+            self.instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
+            self.player = self.instance.media_player_new()
         """something happens here"""
 
     def run(self):

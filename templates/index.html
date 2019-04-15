@@ -47,7 +47,7 @@
             <div class="container">
                 <div class="news">
                     {% for item in news %}
-                    <div class="news-item">{{item}}</div>
+                    <div class="news-item"><a href="{{item['url']}}">{{item['title']}}</a></div>
                     {% endfor %}
                 </div>
             </div>

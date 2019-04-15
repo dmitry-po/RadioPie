@@ -1,39 +1,18 @@
 # Python 2.7.13
 # -*- coding: utf-8 -*-
 
-# 20.06.2018 replace -->
-debug = True
-if not debug:
-    import vlc
-# import vlc
-# 20.06.2018 replace <--
-import time
 from time import sleep
 from flask import Flask
 from flask import render_template
 from flask import request
-import threading
-# 20.06.2018 comment -->
-# import thread
-# 20.06.2018 comment <--
-# -->
 import requests
-# 20.06.2018 add -->
-import alarm
 import xml.etree.ElementTree as xmltree
-# 20.06.2018 add <--
-# 25072018 add -->
+import alarm
 import mediaPlayer as mp
-# 25072018 add <--
-# 07082018 -->
 import subprocess
 import os
-# 07082018 <--
-# <--
 
-if not debug:
-    instance = vlc.Instance('--input-repeat=-1', '--fullscreen')
-    player = instance.media_player_new()
+
 # -->
 OWM_appid = '58aaaed4b1fe9293916758ce54a05b94'
 OWM_api = 'http://api.openweathermap.org/data/2.5/'
@@ -80,6 +59,7 @@ def get_weather(type='weather', city='Moscow', country='ru'):
         #print(weather)
     # 21.06.2018 add -->
     except ConnectionError:
+        print('Cant load weather forecast')
         weather = {'id':'',
                    'humidity': '',
                    'pressure': '',
@@ -92,7 +72,6 @@ def get_weather(type='weather', city='Moscow', country='ru'):
 
 
 def get_weather_forecast(type='forecast', city='Moscow', country='ru'):
-    # 21.06.2018 replace -->
     try:
         request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
         request_res = requests.get(request_link).json()
@@ -119,27 +98,6 @@ def get_weather_forecast(type='forecast', city='Moscow', country='ru'):
                    'temp_min': '',
                    'icon': ''}]
     return weather
-    '''
-    request_link = OWM_api + type + '?&q={0},{1}&appid={2}'.format(city, country, OWM_appid)
-    request_res = requests.get(request_link).json()
-    request_res = request_res['list']
-    weather = []
-    for forecast in request_res:
-        weather.append(
-            {'id':forecast['weather'][0]['id'],
-             'humidity': forecast['main']['humidity'],
-             'pressure': forecast['main']['pressure'],
-             'temp': forecast['main']['temp'] - 273,
-             'temp_max': forecast['main']['temp_max'] - 273,
-             'temp_min': forecast['main']['temp_min'] - 273,
-             'icon': get_weather_icon(forecast['weather'][0]['id']),
-             'date': forecast['dt_txt']}
-            )
-    print(weather)
-    return weather
-    '''
-# 21.06.2018 replace <--
-
 
 def get_weather_icon(id):
     icon = ''
@@ -161,13 +119,17 @@ def get_weather_icon(id):
 
 def get_news():
     link = 'https://meduza.io/api/v3/search?chrono=news&locale=ru&page=0&per_page=1'
-    request_res = requests.get(link).json()
-    news_list = request_res['collection']
     news_titles = []
-    for news in news_list:
-        # news_p = '<p>{}</p>'.format(request_res['documents'])
-        news_titles.append(request_res['documents'][news]['title'])
-    # print(news_titles)
+    try:
+        request_res = requests.get(link).json()
+        news_list = request_res['collection']
+        for news in news_list:
+            # news_p = '<p>{}</p>'.format(request_res['documents'])
+            new_item = {'title':request_res['documents'][news]['title'],
+                        'url':'http://meduza.io/'+request_res['documents'][news]['url']}
+            news_titles.append(new_item)
+    except:
+        print('No news')
     return news_titles
 # <--
 
