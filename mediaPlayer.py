@@ -6,9 +6,11 @@ import time
 playerAvailable = False
 try:
     import vlc
+
     playerAvailable = True
 except:
     print('Cant load vlc')
+
 
 class MediaPlayer(Thread):
     def __init__(self):
@@ -48,22 +50,21 @@ class MediaPlayer(Thread):
         if self.fade_in:
             self.raise_volume()
 
-
     def pause(self):
         print('pause player')
         self.process.stdin.write('p')
 
     def set_params(self, volume=0, fade_in=False, station=''):
-        self.volume=volume
+        self.volume = volume
         self.fade_in = fade_in
-        if len(station)>0:
+        if len(station) > 0:
             self.station = station
 
     def raise_volume(self):
-        while self.volume<0:
+        while self.volume < 0:
             print(self.volume)
             self.process.stdin.write('+')
-            self.volume+=300
+            self.volume += 300
             # time.sleep(60)
             time.sleep(5)
 
@@ -73,8 +74,8 @@ class MediaPlayer(Thread):
             self.volume += 300
         while self.volume > new_volume:
             self.process.stdin.write('-')
-            self.volume -=300
-        
+            self.volume -= 300
+
     def kill_player(self):
         print('!-- start killing --')
         self.process.stdin.write('q')

@@ -7,20 +7,23 @@ from flask import render_template
 from flask import request
 import requests
 import xml.etree.ElementTree as xmltree
-import alarm
-import mediaPlayer as mp
+# import alarm
+# import mediaPlayer as mp
+from series import get_series
 import subprocess
 import os
 
 # -->
 OWM_appid = '58aaaed4b1fe9293916758ce54a05b94'
 OWM_api = 'http://api.openweathermap.org/data/2.5/'
+
+
 # <--
 
 # 20.06.2018 add -->
-player = mp.MediaPlayer()
-new_alarm = alarm.Alarm('alarm', player)
-player.start()
+# player = mp.MediaPlayer()
+# new_alarm = alarm.Alarm('alarm', player)
+# player.start()
 
 
 # 20.06.2018 add <--
@@ -176,24 +179,23 @@ def get_index_page():
 
         if request.form['submit'] == 'on':
             print(selected_station, volume)
-            player.set_params(volume=volume)
-            if not player.is_alive():
-                # player.start()
-                player.play()
-
+            # player.set_params(volume=volume)
+            # if not player.is_alive():
+            # player.start()
+            # player.play()
 
         elif request.form['submit'] == 'off':
             # stop_music()
-            player.kill_player()
+            # player.kill_player()
+            pass
 
         elif request.form['submit'] == 'test':
             print('set volume to {}'.format(volume))
-            player.change_volume(volume)
+            # player.change_volume(volume)
 
     weather_graph_data_dict = []
     for i in range(10):
         weather_graph_data_dict.append({})
-
 
     return render_template('index.html', name="Shine bright!",
                            styles=styles,
@@ -220,28 +222,42 @@ def get_alarm_page():
         # media = instance.media_new(selected_station)
 
         if request.form['submit'] == 'stop_alarm':
-            new_alarm.stop_alarm()
+            # new_alarm.stop_alarm()
+            pass
 
         elif request.form['submit'] == 'set_alarm':
             print('r u here?')
             alarm_time = request.form['start_time']
             alarm_h = int(alarm_time[:2])
             alarm_m = int(alarm_time[3:])
-            new_alarm.set_alarm(alarm_h, alarm_m, 'empty')
-            if not new_alarm.is_alive():
-                new_alarm.start()
+            # new_alarm.set_alarm(alarm_h, alarm_m, 'empty')
+            # if not new_alarm.is_alive():
+            # new_alarm.start()
             # a = thread.start_new_thread(fire_alarm, (media, alarm_h, alarm_m))
 
+    # 12.09.2019  replace -->
+    '''
     return render_template('alarm.html',
                            styles=styles,
                            playlist=get_stations(),
                            selected_station=selected_station,
                            current_alarm=new_alarm.get_next_alarm_time())
+    '''
+    return render_template('alarm.html',
+                           styles=styles,
+                           playlist=get_stations(),
+                           selected_station=selected_station,
+                           current_alarm='someday')
+    # 12.09.2019  replace <--
 
 
 # 20.06.2018 add <--
 
+@app.route('/series', methods=['GET', 'POST'])
+def get_series_page():
+    return get_series()
+
 
 if __name__ == "__main__":
     # app.run()
-    app.run(host='0.0.0.0', port='3000')
+    app.run(host='localhost', port='3001')
